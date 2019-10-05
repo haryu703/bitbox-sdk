@@ -1,7 +1,7 @@
 // imports
 import * as chai from "chai"
-import { BITBOX, REST_URL } from "../../lib/BITBOX"
-import { Util } from "../../lib/Util"
+import { BITBOX, REST_URL } from "../../src/BITBOX"
+import { Util } from "../../src/Util"
 import * as util from "util"
 import { AddressValidateResult } from "bitcoin-com-rest"
 import axios from "axios"

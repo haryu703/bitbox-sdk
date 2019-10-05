@@ -1,6 +1,6 @@
 // imports
 import * as assert from "assert";
-import { BITBOX } from "../../lib/BITBOX"
+import { BITBOX } from "../../src/BITBOX"
 import { Buffer } from "buffer"
 
 // consts

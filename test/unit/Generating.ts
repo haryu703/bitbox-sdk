@@ -2,8 +2,8 @@
 import * as assert from "assert";
 import axios from "axios";
 import * as sinon from "sinon";
-import { BITBOX, REST_URL } from "../../lib/BITBOX"
-import { Generating } from "../../lib/Generating"
+import { BITBOX, REST_URL } from "../../src/BITBOX"
+import { Generating } from "../../src/Generating"
 
 // consts
 const bitbox: BITBOX = new BITBOX()

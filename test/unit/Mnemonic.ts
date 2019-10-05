@@ -1,7 +1,7 @@
 // imports
 import * as assert from "assert";
-import { BITBOX } from "../../lib/BITBOX"
-import { Mnemonic } from "../../lib/Mnemonic"
+import { BITBOX } from "../../src/BITBOX"
+import { Mnemonic } from "../../src/Mnemonic"
 
 // consts
 const bitbox: BITBOX = new BITBOX()

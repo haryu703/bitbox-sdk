@@ -1,7 +1,7 @@
 // imports
 import * as assert from "assert";
-import { BITBOX } from "../../lib/BITBOX"
-import { Script, DecodedP2PKHInput, DecodedP2MSOutput } from "../../lib/Script"
+import { BITBOX } from "../../src/BITBOX"
+import { Script, DecodedP2PKHInput, DecodedP2MSOutput } from "../../src/Script"
 import * as bcl from "bitcoincashjs-lib"
 
 // consts

@@ -2,9 +2,9 @@
 import * as chai from "chai"
 import axios from "axios"
 import * as sinon from "sinon"
-import { BITBOX } from "../../lib/BITBOX"
-import { Blockchain } from "../../lib/Blockchain"
-import { REST_URL } from "../../lib/BITBOX"
+import { BITBOX } from "../../src/BITBOX"
+import { Blockchain } from "../../src/Blockchain"
+import { REST_URL } from "../../src/BITBOX"
 import * as util from "util"
 import { BlockHeaderResult } from "bitcoin-com-rest"
 

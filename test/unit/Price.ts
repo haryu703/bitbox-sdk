@@ -1,7 +1,7 @@
 // imports
 import * as chai from "chai"
-import { BITBOX } from "../../lib/BITBOX"
-import { Price } from "../../lib/Price"
+import { BITBOX } from "../../src/BITBOX"
+import { Price } from "../../src/Price"
 import axios from "axios"
 import * as sinon from "sinon"
 

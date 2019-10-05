@@ -1,7 +1,7 @@
 // imports
 import * as chai from "chai"
-import { BITBOX } from "../../lib/BITBOX"
-import { BitcoinCash, BIP21Object } from "../../lib/BitcoinCash"
+import { BITBOX } from "../../src/BITBOX"
+import { BitcoinCash, BIP21Object } from "../../src/BitcoinCash"
 
 // consts
 const bitbox: BITBOX = new BITBOX()

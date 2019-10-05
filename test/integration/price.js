@@ -1,5 +1,5 @@
 const assert = require("assert")
-const BITBOX = require("../../lib/BITBOX").BITBOX
+const BITBOX = require("../../dist/BITBOX").BITBOX
 let bitbox = new BITBOX()
 
 if (process.env.SERVER === "local")

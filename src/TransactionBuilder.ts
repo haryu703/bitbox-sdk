@@ -1,6 +1,6 @@
 // imports
 import { ECPair } from "bitcoincashjs-lib"
-import { BchInfo } from ".."
+import { BchInfo } from "."
 import { Address } from "./Address"
 import { TREST_URL } from "./BITBOX"
 

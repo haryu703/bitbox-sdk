@@ -2,9 +2,9 @@
 import * as assert from "assert";
 import axios from "axios";
 import * as sinon from "sinon";
-import { BITBOX } from "../../lib/BITBOX"
-import { Control } from "../../lib/Control"
-import { REST_URL } from "../../lib/BITBOX"
+import { BITBOX } from "../../src/BITBOX"
+import { Control } from "../../src/Control"
+import { REST_URL } from "../../src/BITBOX"
 
 // consts
 const bitbox: BITBOX = new BITBOX()

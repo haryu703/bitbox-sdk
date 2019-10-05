@@ -7,8 +7,8 @@ import {
 } from "bitcoin-com-rest"
 import * as chai from "chai"
 import * as util from "util"
-import { BITBOX, REST_URL } from "../../lib/BITBOX"
-import { CashAccounts } from "../../lib/CashAccounts"
+import { BITBOX, REST_URL } from "../../src/BITBOX"
+import { CashAccounts } from "../../src/CashAccounts"
 
 // consts
 const bitbox: BITBOX = new BITBOX()

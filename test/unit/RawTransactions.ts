@@ -5,8 +5,8 @@ import {
 } from "bitcoin-com-rest"
 import * as chai from "chai"
 import * as util from "util"
-import { BITBOX, REST_URL } from "../../lib/BITBOX"
-import { RawTransactions } from "../../lib/RawTransactions"
+import { BITBOX, REST_URL } from "../../src/BITBOX"
+import { RawTransactions } from "../../src/RawTransactions"
 import axios from "axios"
 import * as sinon from "sinon"
 

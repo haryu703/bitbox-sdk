@@ -1,8 +1,8 @@
 // imports
 import * as assert from "assert"
 import { Buffer } from "buffer"
-import { BITBOX } from "../../lib/BITBOX"
-import { ECPair } from "../../lib/ECPair"
+import { BITBOX } from "../../src/BITBOX"
+import { ECPair } from "../../src/ECPair"
 
 // consts
 const bitbox: BITBOX = new BITBOX()

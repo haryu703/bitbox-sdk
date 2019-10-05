@@ -1,7 +1,7 @@
 // imports
 import * as assert from "assert";
-import { BITBOX } from "../../lib/BITBOX"
-import { HDNode } from "../../lib/HDNode"
+import { BITBOX } from "../../src/BITBOX"
+import { HDNode } from "../../src/HDNode"
 import * as bcl from "bitcoincashjs-lib"
 
 // consts

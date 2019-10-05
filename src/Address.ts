@@ -6,7 +6,7 @@ import {
   AddressUtxoResult
 } from "bitcoin-com-rest"
 import * as bcl from "bitcoincashjs-lib"
-import { BchInfo } from ".."
+import { BchInfo } from "."
 import { REST_URL } from "./BITBOX"
 
 // consts

@@ -5,8 +5,8 @@ import {
   AddressUtxoResult
 } from "bitcoin-com-rest"
 import * as chai from "chai"
-import { Address } from "../../lib/Address"
-import { BITBOX, REST_URL } from "../../lib/BITBOX"
+import { Address } from "../../src/Address"
+import { BITBOX, REST_URL } from "../../src/BITBOX"
 
 import axios from "axios"
 

@@ -4,8 +4,8 @@ import { TxnDetailsResult } from "bitcoin-com-rest"
 import axios from "axios"
 import * as sinon from "sinon"
 
-import { BITBOX, REST_URL } from "../../lib/BITBOX"
-import { Transaction } from "../../lib/Transaction"
+import { BITBOX, REST_URL } from "../../src/BITBOX"
+import { Transaction } from "../../src/Transaction"
 
 // consts
 const bitbox: BITBOX = new BITBOX()
