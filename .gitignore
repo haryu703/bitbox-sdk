@@ -4,12 +4,9 @@ wallet-info.txt
 wallet.json
 
 package-lock.json
-# yarn-lock.json
 
 # production
-/dist
-index.js
-index.js.map
+# /dist
 test/**/*.js
 test/**/*.js.map
 
