@@ -1,10 +1,9 @@
 // imports
 import axios, { AxiosResponse } from "axios"
+import { Buffer } from "safe-buffer"
 import { BITDB_URL } from "./BITBOX"
 import { BitDBResponse, QueryInterface } from "./interfaces/BITBOXInterfaces"
 
-// consts
-const Buffer = require("safe-buffer").Buffer
 
 export class BitDB {
   public bitdbURL: string

@@ -1,6 +1,7 @@
 // imports
 import * as bcl from "bitcoinforksjs-lib"
 import { Address } from "./Address"
+import { Buffer } from "safe-buffer"
 
 // consts
 const sb = require("satoshi-bitcoin")
@@ -10,7 +11,6 @@ const bip21 = require("bip21")
 const bip38 = require("bip38")
 const wif = require("wif")
 
-const Buffer = require("safe-buffer").Buffer
 
 export interface EncodeBIP21Options {
   amount?: number
