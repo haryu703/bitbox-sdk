@@ -5,15 +5,12 @@ import {
   AddressUnconfirmedResult,
   AddressUtxoResult
 } from "bitcoin-com-rest"
-import * as bcl from "bitcoincashjs-lib"
-import { BchInfo } from "."
+import * as bcl from "bitcoinforksjs-lib"
 import { REST_URL } from "./BITBOX"
 
 // consts
 // TODO: port require statements to impprt
-const Bitcoin = require("bitcoincashjs-lib")
 const cashaddr = require("cashaddrjs")
-const coininfo = require("coininfo")
 
 interface Hash {
   hash: Buffer
@@ -44,32 +41,32 @@ export class Address {
   // Translate address from any address format into a specific format.
   public toLegacyAddress(address: string): string {
     const { prefix, type, hash }: Decoded = this._decode(address)
-    let bitcoincash: BchInfo = coininfo.bitcoincash.main
+    let bitcoincash: bcl.Network = bcl.networks.bitcoin
     switch (prefix) {
       case "bitcoincash":
-        bitcoincash = coininfo.bitcoincash.main
+        bitcoincash = bcl.networks.bitcoin
         break
       case "bchtest":
-        bitcoincash = coininfo.bitcoincash.test
+        bitcoincash = bcl.networks.testnet
         break
       case "bchreg":
-        bitcoincash = coininfo.bitcoincash.regtest
+        bitcoincash = bcl.networks.testnet
         break
     }
 
-    let version: number = bitcoincash.versions.public
+    let version: number = bitcoincash.pubKeyHash
     switch (type) {
       case "P2PKH":
-        version = bitcoincash.versions.public
+        version = bitcoincash.pubKeyHash
         break
       case "P2SH":
-        version = bitcoincash.versions.scripthash
+        version = bitcoincash.scriptHash
         break
     }
 
     const hashBuf: Buffer = Buffer.from(hash)
 
-    return Bitcoin.address.toBase58Check(hashBuf, version)
+    return bcl.address.toBase58Check(hashBuf, version)
   }
 
   public toCashAddress(
@@ -95,14 +92,14 @@ export class Address {
 
   // Converts legacy address format to hash160
   public legacyToHash160(address: string): string {
-    const bytes: Bytes = Bitcoin.address.fromBase58Check(address)
+    const bytes: Bytes = bcl.address.fromBase58Check(address)
     return bytes.hash.toString("hex")
   }
 
   // Converts cash address format to hash160
   public cashToHash160(address: string): string {
     const legacyAddress: string = this.toLegacyAddress(address)
-    const bytes: Bytes = Bitcoin.address.fromBase58Check(legacyAddress)
+    const bytes: Bytes = bcl.address.fromBase58Check(legacyAddress)
     return bytes.hash.toString("hex")
   }
 
@@ -116,16 +113,16 @@ export class Address {
   // Converts hash160 to Legacy Address
   public hash160ToLegacy(
     hash160: string,
-    network: number = Bitcoin.networks.bitcoin.pubKeyHash
+    network: number = bcl.networks.bitcoin.pubKeyHash
   ): string {
     const buffer: Buffer = Buffer.from(hash160, "hex")
-    return Bitcoin.address.toBase58Check(buffer, network)
+    return bcl.address.toBase58Check(buffer, network)
   }
 
   // Converts hash160 to Cash Address
   public hash160ToCash(
     hash160: string,
-    network: number = Bitcoin.networks.bitcoin.pubKeyHash,
+    network: number = bcl.networks.bitcoin.pubKeyHash,
     regtest: boolean = false
   ): string {
     const legacyAddress: string = this.hash160ToLegacy(hash160, network)
@@ -205,45 +202,49 @@ export class Address {
   }
 
   public fromXPub(xpub: string, path: string = "0/0"): string {
-    let bitcoincash: BchInfo
-    if (xpub[0] === "x") bitcoincash = coininfo.bitcoincash.main
-    else bitcoincash = coininfo.bitcoincash.test
+    let bitcoincash: bcl.Network
+    if (xpub[0] === "x") bitcoincash = bcl.networks.bitcoin
+    else bitcoincash = bcl.networks.testnet
 
-    const bitcoincashBitcoinJSLib: any = bitcoincash.toBitcoinJS()
-    const HDNode: bcl.HDNode = Bitcoin.HDNode.fromBase58(
+    const HDNode = bcl.bip32.fromBase58(
       xpub,
-      bitcoincashBitcoinJSLib
+      bitcoincash
     )
-    const address: bcl.HDNode = HDNode.derivePath(path)
-    return this.toCashAddress(address.getAddress())
+    const address = bcl.payments.p2pkh({ pubkey: HDNode.derivePath(path).publicKey, network: bitcoincash }).address
+    if (!address) {
+      throw new Error(`failed to convert xpub to address ${xpub}, ${path}`)
+    }
+    return this.toCashAddress(address)
   }
 
   public fromXPriv(xpriv: string, path: string = "0'/0"): string {
-    let bitcoincash: BchInfo
-    if (xpriv[0] === "x") bitcoincash = coininfo.bitcoincash.main
-    else bitcoincash = coininfo.bitcoincash.test
+    let bitcoincash: bcl.Network
+    if (xpriv[0] === "x") bitcoincash = bcl.networks.bitcoin
+    else bitcoincash = bcl.networks.testnet
 
-    const bitcoincashBitcoinJSLib: any = bitcoincash.toBitcoinJS()
-    const HDNode: bcl.HDNode = Bitcoin.HDNode.fromBase58(
+    const HDNode = bcl.bip32.fromBase58(
       xpriv,
-      bitcoincashBitcoinJSLib
+      bitcoincash
     )
-    const address: bcl.HDNode = HDNode.derivePath(path)
-    return this.toCashAddress(address.getAddress())
+    const address = bcl.payments.p2pkh({ pubkey: HDNode.derivePath(path).publicKey, network: bitcoincash}).address
+    if (!address) {
+      throw new Error(`failed to convert xpriv to address: ${xpriv}, ${path}`)
+    }
+    return this.toCashAddress(address)
   }
 
   public fromOutputScript(
     scriptPubKey: Buffer,
     network: string = "mainnet"
   ): string {
-    let netParam: any
+    let netParam: bcl.Network | undefined
     if (network !== "bitcoincash" && network !== "mainnet")
-      netParam = Bitcoin.networks.testnet
+      netParam = bcl.networks.testnet
 
     const regtest: boolean = network === "bchreg"
 
     return this.toCashAddress(
-      Bitcoin.address.fromOutputScript(scriptPubKey, netParam),
+      bcl.address.fromOutputScript(scriptPubKey, netParam),
       true,
       regtest
     )
@@ -382,11 +383,11 @@ export class Address {
 
   private _decode(address: string): Decoded {
     try {
-      return this._decodeLegacyAddress(address)
+      return this._decodeCashAddress(address)
     } catch (error) {}
 
     try {
-      return this._decodeCashAddress(address)
+      return this._decodeLegacyAddress(address)
     } catch (error) {}
 
     throw new Error(`Unsupported address format : ${address}`)
@@ -401,11 +402,11 @@ export class Address {
   }
 
   private _decodeLegacyAddress(address: string): Decoded {
-    const { version, hash }: Bytes = Bitcoin.address.fromBase58Check(address)
+    const { version, hash }: Bytes = bcl.address.fromBase58Check(address)
     const info: {
-      main: any
-      test: any
-    } = coininfo.bitcoincash
+      bitcoin: bcl.Network
+      testnet: bcl.Network
+    } = bcl.networks
 
     let decoded: Decoded = {
       prefix: "",
@@ -414,7 +415,7 @@ export class Address {
       format: ""
     }
     switch (version) {
-      case info.main.versions.public:
+      case info.bitcoin.pubKeyHash:
         decoded = {
           prefix: "bitcoincash",
           type: "P2PKH",
@@ -422,7 +423,7 @@ export class Address {
           format: "legacy"
         }
         break
-      case info.main.versions.scripthash:
+      case info.bitcoin.scriptHash:
         decoded = {
           prefix: "bitcoincash",
           type: "P2SH",
@@ -430,7 +431,7 @@ export class Address {
           format: "legacy"
         }
         break
-      case info.test.versions.public:
+      case info.testnet.pubKeyHash:
         decoded = {
           prefix: "bchtest",
           type: "P2PKH",
@@ -438,7 +439,7 @@ export class Address {
           format: "legacy"
         }
         break
-      case info.test.versions.scripthash:
+      case info.testnet.scriptHash:
         decoded = {
           prefix: "bchtest",
           type: "P2SH",

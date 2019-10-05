@@ -46,7 +46,7 @@ export class BITBOX {
   public CashAccounts: CashAccounts
   public Control: Control
   public Crypto: Crypto
-  public ECPair: any
+  public ECPair: ECPair
   public Generating: Generating
   public HDNode: HDNode
   public Mining: Mining
@@ -55,7 +55,7 @@ export class BITBOX {
   public RawTransactions: RawTransactions
   public Script: Script
   public Transaction: Transaction
-  public TransactionBuilder: any
+  public TransactionBuilder: { new(network?: string): TransactionBuilder }
   public Util: Util
   public Socket: any
   public Schnorr: Schnorr

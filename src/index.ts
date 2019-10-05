@@ -21,30 +21,3 @@ export * from "./Socket"
 export * from "./Transaction"
 export * from "./TransactionBuilder"
 export * from "./Util"
-
-export interface BchInfo {
-  hashGenesisBlock: string
-  port: number
-  portRpc: number
-  protocol: {
-    magic: number
-  }
-  seedsDns: string[]
-  versions: {
-    bip32: {
-      private: number
-      public: number
-    }
-    bip44: number
-    private: number
-    public: number
-    scripthash: number
-    messagePrefix: string
-  }
-  name: string
-  per1: number
-  unit: string
-  testnet: boolean
-  toBitcoinJS: any
-  toBitcore: any
-}

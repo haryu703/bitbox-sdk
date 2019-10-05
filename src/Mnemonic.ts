@@ -1,12 +1,8 @@
 import * as BIP39 from "bip39"
-import * as bcl from "bitcoincashjs-lib"
-// import * as Bitcoin from "bitcoincashjs-lib"
+import * as bcl from "bitcoinforksjs-lib"
 import { Buffer } from "buffer"
 import * as randomBytes from "randombytes"
-import * as wif from "wif"
 import { Address } from "./Address"
-// TODO: convert "bitcoincashjs-lib" require to import
-const Bitcoin = require("bitcoincashjs-lib")
 
 export class Mnemonic {
   private _address: Address
@@ -64,7 +60,7 @@ export class Mnemonic {
     return BIP39.mnemonicToSeed(mnemonic, password)
   }
 
-  public wordLists(): any {
+  public wordLists(): {[key: string]: string[]} {
     return BIP39.wordlists
   }
 
@@ -72,27 +68,21 @@ export class Mnemonic {
     mnemonic: string,
     numberOfKeypairs: number = 1,
     regtest: boolean = false
-  ): any {
+  ) {
     const rootSeedBuffer: Buffer = this.toSeed(mnemonic, "")
-    const hdNode: bcl.HDNode = Bitcoin.HDNode.fromSeedBuffer(rootSeedBuffer)
+    const network = regtest ? bcl.networks.regtest : undefined
+    const hdNode = bcl.bip32.fromSeed(rootSeedBuffer, network)
     const HDPath: string = `44'/145'/0'/0/`
 
-    const accounts: any[] = []
+    const accounts: {privateKeyWIF: string, address: string}[] = []
 
     for (let i = 0; i < numberOfKeypairs; i++) {
-      const childHDNode: bcl.HDNode = hdNode.derivePath(`${HDPath}${i}`)
-
-      let prefix: number = 128
-      if (regtest === true) prefix = 239
+      const childHDNode = hdNode.derivePath(`${HDPath}${i}`)
 
       accounts.push({
-        privateKeyWIF: wif.encode(
-          prefix,
-          childHDNode.keyPair.d.toBuffer(32),
-          true
-        ),
+        privateKeyWIF: childHDNode.toWIF(),
         address: this._address.toCashAddress(
-          childHDNode.getAddress(),
+          bcl.payments.p2pkh({ pubkey: childHDNode.publicKey, network }).address!,
           true,
           regtest
         )

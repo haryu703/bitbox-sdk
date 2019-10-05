@@ -1,19 +1,8 @@
 // imports
-import { ECPair } from "bitcoincashjs-lib"
-import { BchInfo } from "."
+import * as bcl from "bitcoinforksjs-lib"
+import { SignatureAlgorithm } from "."
 import { Address } from "./Address"
 import { TREST_URL } from "./BITBOX"
-
-// consts
-const Bitcoin = require("bitcoincashjs-lib")
-const coininfo = require("coininfo")
-const bip66 = require("bip66")
-const bip68 = require("bc-bip68")
-
-declare interface SignatureAlgorithms {
-  ECDSA: number
-  SCHNORR: number
-}
 
 declare interface HashTypes {
   SIGHASH_ALL: number
@@ -26,29 +15,26 @@ declare interface HashTypes {
 }
 
 export class TransactionBuilder {
-  transaction: any
-  DEFAULT_SEQUENCE: any
+  transaction: bcl.TransactionBuilder
+  DEFAULT_SEQUENCE: number
   hashTypes: HashTypes
-  signatureAlgorithms: SignatureAlgorithms
-  bip66: any
-  bip68: any
-  p2shInput: any
-  tx: any
+  p2shInput: boolean
+  tx: bcl.Transaction | undefined
   private _address: Address
 
   constructor(network: string = "mainnet") {
-    let bitcoincash: BchInfo
+    let bitcoincash: bcl.Network
     if (network === "mainnet") {
       this._address = new Address()
     } else {
       this._address = new Address(TREST_URL)
     }
     if (network === "bitcoincash" || network === "mainnet")
-      bitcoincash = coininfo.bitcoincash.main
-    else bitcoincash = coininfo.bitcoincash.test
+      bitcoincash = bcl.networks.bitcoin
+    else bitcoincash = bcl.networks.testnet
 
-    const bitcoincashBitcoinJSLib: any = bitcoincash.toBitcoinJS()
-    this.transaction = new Bitcoin.TransactionBuilder(bitcoincashBitcoinJSLib)
+    this.transaction = new bcl.TransactionBuilder(bitcoincash)
+    this.transaction.enableBitcoinCash(true)
     this.DEFAULT_SEQUENCE = 0xffffffff
     this.hashTypes = {
       SIGHASH_ALL: 0x01,
@@ -59,12 +45,6 @@ export class TransactionBuilder {
       ADVANCED_TRANSACTION_MARKER: 0x00,
       ADVANCED_TRANSACTION_FLAG: 0x01
     }
-    this.signatureAlgorithms = {
-      ECDSA: Bitcoin.ECSignature.ECDSA,
-      SCHNORR: Bitcoin.ECSignature.SCHNORR
-    }
-    this.bip66 = bip66
-    this.bip68 = bip68
     this.p2shInput = false
     this.tx
   }
@@ -73,21 +53,27 @@ export class TransactionBuilder {
     txHash: string,
     vout: number,
     sequence: number = this.DEFAULT_SEQUENCE,
-    prevOutScript: string | Buffer | null = null
+    prevOutScript: string | Buffer | undefined = undefined
   ): void {
-    this.transaction.addInput(txHash, vout, sequence, prevOutScript)
+    let script: Buffer | undefined
+    if (typeof prevOutScript !== 'string') {
+      script = prevOutScript
+    } else {
+      script = Buffer.from(prevOutScript, 'hex')
+    }
+    this.transaction.addInput(txHash, vout, sequence, script)
   }
 
-  public addInputScript(vout: number, script: any): void {
+  public addInputScript(vout: number, script: Buffer): void {
     this.tx = this.transaction.buildIncomplete()
     this.tx.setInputScript(vout, script)
     this.p2shInput = true
   }
 
-  public addInputScripts(scripts: any): void {
+  public addInputScripts(scripts: {script: Buffer, vout: number}[]): void {
     this.tx = this.transaction.buildIncomplete()
-    scripts.forEach((script: any) => {
-      this.tx.setInputScript(script.vout, script.script)
+    scripts.forEach((script) => {
+      this.tx!.setInputScript(script.vout, script.script)
     })
     this.p2shInput = true
   }
@@ -110,27 +96,26 @@ export class TransactionBuilder {
 
   public sign(
     vin: number,
-    keyPair: ECPair,
+    keyPair: bcl.ECPairInterface,
     redeemScript: Buffer | undefined,
     hashType: number = this.hashTypes.SIGHASH_ALL,
     value: number,
-    signatureAlgorithm: number = 0
+    signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.ECDSA
   ): void {
-    let witnessScript
+    const witnessScript = undefined
 
     this.transaction.sign(
       vin,
       keyPair,
       redeemScript,
-      hashType,
+      hashType | this.hashTypes.SIGHASH_BITCOINCASH_BIP143,
       value,
       witnessScript,
-      signatureAlgorithm
     )
   }
 
-  public build(): any {
-    if (this.p2shInput === true) return this.tx
+  public build(): bcl.Transaction {
+    if (this.p2shInput === true) return this.tx!
 
     return this.transaction.build()
   }

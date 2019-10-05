@@ -1,13 +1,12 @@
 // imports
+import * as bcl from "bitcoinforksjs-lib"
 import { Address } from "./Address"
 
 // consts
-const Bitcoin = require("bitcoincashjs-lib")
 const sb = require("satoshi-bitcoin")
 const bitcoinMessage = require("bitcoinjs-message")
 const bs58 = require("bs58")
 const bip21 = require("bip21")
-const coininfo = require("coininfo")
 const bip38 = require("bip38")
 const wif = require("wif")
 
@@ -61,16 +60,15 @@ export class BitcoinCash {
   ): string {
     const network: string =
       privateKeyWIF.charAt(0) === "c" ? "testnet" : "mainnet"
-    let bitcoincash: any
-    if (network === "mainnet") bitcoincash = coininfo.bitcoincash.main
-    else bitcoincash = coininfo.bitcoincash.test
+    let bitcoincash: bcl.Network
+    if (network === "mainnet") bitcoincash = bcl.networks.bitcoin
+    else bitcoincash = bcl.networks.testnet
 
-    const bitcoincashBitcoinJSLib: any = bitcoincash.toBitcoinJS()
-    const keyPair: any = Bitcoin.ECPair.fromWIF(
+    const keyPair = bcl.ECPair.fromWIF(
       privateKeyWIF,
-      bitcoincashBitcoinJSLib
+      bitcoincash
     )
-    const privateKey: any = keyPair.d.toBuffer(32)
+    const privateKey = keyPair.privateKey!
     return bitcoinMessage
       .sign(message, privateKey, keyPair.compressed)
       .toString("base64")
@@ -175,7 +173,7 @@ export class BitcoinCash {
     network: string = "mainnet"
   ): string {
     const decryptedKey: any = bip38.decrypt(encryptedKey, passphrase)
-    let prefix: any
+    let prefix: number
     if (network === "testnet") prefix = 0xef
     else prefix = 0x80
 

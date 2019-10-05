@@ -1,8 +1,7 @@
 // imports
+import * as bcl from "bitcoinforksjs-lib"
 import {
   AddressDetailsResult,
-  AddressUnconfirmedResult,
-  AddressUtxoResult
 } from "bitcoin-com-rest"
 import * as chai from "chai"
 import { Address } from "../../src/Address"
@@ -16,7 +15,6 @@ const assert: Chai.AssertStatic = chai.assert
 
 // TODO: port from require to import syntax
 const fixtures = require("./fixtures/Address.json")
-const Bitcoin = require("bitcoincashjs-lib")
 const sinon = require("sinon")
 const addressMock = require("./mocks/address-mock.js")
 
@@ -320,7 +318,7 @@ describe("#Address", (): void => {
           fixtures.hash160MainnetP2SH.map((hash160: string) =>
             bitbox.Address.hash160ToLegacy(
               hash160,
-              Bitcoin.networks.bitcoin.scriptHash
+              bcl.networks.bitcoin.scriptHash
             )
           ),
           fixtures.legacyMainnetP2SH
@@ -332,7 +330,7 @@ describe("#Address", (): void => {
           fixtures.hash160TestnetP2PKH.map((hash160: string) =>
             bitbox.Address.hash160ToLegacy(
               hash160,
-              Bitcoin.networks.testnet.pubKeyHash
+              bcl.networks.testnet.pubKeyHash
             )
           ),
           fixtures.legacyTestnetP2PKH
@@ -353,7 +351,7 @@ describe("#Address", (): void => {
           fixtures.hash160MainnetP2SH.map((hash160: string) =>
             bitbox.Address.hash160ToCash(
               hash160,
-              Bitcoin.networks.bitcoin.scriptHash
+              bcl.networks.bitcoin.scriptHash
             )
           ),
           fixtures.cashaddrMainnetP2SH
@@ -365,7 +363,7 @@ describe("#Address", (): void => {
           fixtures.hash160TestnetP2PKH.map((hash160: string) =>
             bitbox.Address.hash160ToCash(
               hash160,
-              Bitcoin.networks.testnet.pubKeyHash
+              bcl.networks.testnet.pubKeyHash
             )
           ),
           fixtures.cashaddrTestnetP2PKH
@@ -377,7 +375,7 @@ describe("#Address", (): void => {
           fixtures.hash160TestnetP2PKH.map((hash160: string) =>
             bitbox.Address.hash160ToCash(
               hash160,
-              Bitcoin.networks.testnet.pubKeyHash,
+              bcl.networks.testnet.pubKeyHash,
               true
             )
           ),

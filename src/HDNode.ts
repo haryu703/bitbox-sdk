@@ -1,11 +1,9 @@
 // imports
-import * as bcl from "bitcoincashjs-lib"
+import * as bcl from "bitcoinforksjs-lib"
 import { Address } from "./Address"
 
 // consts
-const Bitcoin = require("bitcoincashjs-lib")
-const coininfo = require("coininfo")
-const bip32utils = require("bip32-utils")
+// const bip32utils = require("bip32-utils")
 
 export class HDNode {
   private _address: Address
@@ -13,116 +11,122 @@ export class HDNode {
     this._address = address
   }
 
-  public fromSeed(
-    rootSeedBuffer: any,
-    network: string = "mainnet"
-  ): bcl.HDNode {
-    let bitcoincash: any
+  private toNetwork(network: string): bcl.Network {
+    let bitcoincash: bcl.Network
     if (network === "bitcoincash" || network === "mainnet")
-      bitcoincash = coininfo.bitcoincash.main
-    else bitcoincash = coininfo.bitcoincash.test
+      bitcoincash = bcl.networks.bitcoin
+    else bitcoincash = bcl.networks.testnet
 
-    const bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
-    return Bitcoin.HDNode.fromSeedBuffer(
+    return bitcoincash
+  }
+
+  public fromSeed(
+    rootSeedBuffer: Buffer,
+    network: string = "mainnet"
+  ): bcl.BIP32Interface {
+    return bcl.bip32.fromSeed(
       rootSeedBuffer,
-      bitcoincashBitcoinJSLib
+      this.toNetwork(network)
     )
   }
 
-  public toLegacyAddress(hdNode: bcl.HDNode): string {
-    return hdNode.getAddress()
+  public toLegacyAddress(hdNode: bcl.BIP32Interface): string {
+    const address = bcl.payments.p2pkh({ pubkey: hdNode.publicKey }).address
+    if (!address) {
+      throw new Error(`failed to convert hdnode to legacy address ${hdNode}`)
+    }
+    return address
   }
 
-  public toCashAddress(hdNode: bcl.HDNode, regtest: boolean = false): string {
-    return this._address.toCashAddress(hdNode.getAddress(), true, regtest)
+  public toCashAddress(hdNode: bcl.BIP32Interface, regtest: boolean = false): string {
+    return this._address.toCashAddress(this.toLegacyAddress(hdNode), true, regtest)
   }
 
-  public toWIF(hdNode: bcl.HDNode): string {
-    return hdNode.keyPair.toWIF()
+  public toWIF(hdNode: bcl.BIP32Interface): string {
+    return hdNode.toWIF()
   }
 
-  public toXPub(hdNode: bcl.HDNode): string {
+  public toXPub(hdNode: bcl.BIP32Interface): string {
     return hdNode.neutered().toBase58()
   }
 
-  public toXPriv(hdNode: bcl.HDNode): string {
+  public toXPriv(hdNode: bcl.BIP32Interface): string {
     return hdNode.toBase58()
   }
 
-  public toKeyPair(hdNode: bcl.HDNode): bcl.ECPair {
-    return hdNode.keyPair
+  public toKeyPair(hdNode: bcl.BIP32Interface): bcl.ECPairInterface {
+    const network = hdNode.network.wif === bcl.networks.bitcoin.wif ? bcl.networks.bitcoin : bcl.networks.testnet
+    return bcl.ECPair.fromWIF(hdNode.toWIF(), network)
   }
 
-  public toPublicKey(hdNode: bcl.HDNode): Buffer {
-    return hdNode.getPublicKeyBuffer()
+  public toPublicKey(hdNode: bcl.BIP32Interface): Buffer {
+    return hdNode.publicKey
   }
 
-  public fromXPriv(xpriv: string): bcl.HDNode {
-    let bitcoincash: any
-    if (xpriv[0] === "x") bitcoincash = coininfo.bitcoincash.main
-    else if (xpriv[0] === "t") bitcoincash = coininfo.bitcoincash.test
+  public fromXPriv(xpriv: string): bcl.BIP32Interface {
+    let bitcoincash: bcl.Network
+    if (xpriv[0] === "x") bitcoincash = bcl.networks.bitcoin
+    else bitcoincash = bcl.networks.testnet
 
-    const bitcoincashBitcoinJSLib = bitcoincash.toBitcoinJS()
-    return Bitcoin.HDNode.fromBase58(xpriv, bitcoincashBitcoinJSLib)
+    return bcl.bip32.fromBase58(xpriv, bitcoincash)
   }
 
-  public fromXPub(xpub: string): bcl.HDNode {
-    let bitcoincash: any
-    if (xpub[0] === "x") bitcoincash = coininfo.bitcoincash.main
-    else if (xpub[0] === "t") bitcoincash = coininfo.bitcoincash.test
+  public fromXPub(xpub: string): bcl.BIP32Interface {
+    let bitcoincash: bcl.Network
+    if (xpub[0] === "x") bitcoincash = bcl.networks.bitcoin
+    else bitcoincash = bcl.networks.testnet
 
-    const bitcoincashBitcoinJSLib: any = bitcoincash.toBitcoinJS()
-    return Bitcoin.HDNode.fromBase58(xpub, bitcoincashBitcoinJSLib)
+    return bcl.bip32.fromBase58(xpub, bitcoincash)
   }
 
-  public derivePath(hdnode: bcl.HDNode, path: string): bcl.HDNode {
+  public derivePath(hdnode: bcl.BIP32Interface, path: string): bcl.BIP32Interface {
     return hdnode.derivePath(path)
   }
 
-  public derive(hdnode: bcl.HDNode, path: number): bcl.HDNode {
+  public derive(hdnode: bcl.BIP32Interface, path: number): bcl.BIP32Interface {
     return hdnode.derive(path)
   }
 
-  public deriveHardened(hdnode: bcl.HDNode, path: number): bcl.HDNode {
+  public deriveHardened(hdnode: bcl.BIP32Interface, path: number): bcl.BIP32Interface {
     return hdnode.deriveHardened(path)
   }
 
-  public sign(hdnode: bcl.HDNode, buffer: Buffer): bcl.ECSignature {
+  public sign(hdnode: bcl.BIP32Interface, buffer: Buffer): Buffer {
     return hdnode.sign(buffer)
   }
 
   public verify(
-    hdnode: bcl.HDNode,
+    hdnode: bcl.BIP32Interface,
     buffer: Buffer,
-    signature: bcl.ECSignature
+    signature: Buffer
   ): boolean {
     return hdnode.verify(buffer, signature)
   }
 
-  public isPublic(hdnode: bcl.HDNode): boolean {
-    return JSON.parse(hdnode.isNeutered())
+  public isPublic(hdnode: bcl.BIP32Interface): boolean {
+    return hdnode.isNeutered()
   }
 
-  public isPrivate(hdnode: bcl.HDNode): boolean {
+  public isPrivate(hdnode: bcl.BIP32Interface): boolean {
     return !hdnode.isNeutered()
   }
 
-  public toIdentifier(hdnode: bcl.HDNode): Buffer {
-    return hdnode.getIdentifier()
+  public toIdentifier(hdnode: bcl.BIP32Interface): Buffer {
+    return hdnode.identifier
   }
 
-  public fromBase58(base58: string, network: string): string {
-    return Bitcoin.HDNode.fromBase58(base58, network)
+  public fromBase58(base58: string, network: string): bcl.BIP32Interface {
+    return bcl.bip32.fromBase58(base58, this.toNetwork(network))
   }
 
-  public createAccount(hdNodes: bcl.HDNode[]): object {
-    const arr: any = hdNodes.map(
-      (item: any, index: number) => new bip32utils.Chain(item.neutered())
-    )
-    return new bip32utils.Account(arr)
-  }
+  // public createAccount(hdNodes: bcl.BIP32Interface[]): object {
+  //   const arr: any = hdNodes.map(
+  //     (item: any, index: number) => new bip32utils.Chain(item.neutered())
+  //   )
+  //   return new bip32utils.Account(arr)
+  // }
 
-  public createChain(hdNode: bcl.HDNode): object {
-    return new bip32utils.Chain(hdNode)
-  }
+  // public createChain(hdNode: bcl.BIP32Interface): object {
+  //   return new bip32utils.Chain(hdNode)
+  // }
 }

@@ -21,7 +21,7 @@ export class Schnorr {
     publicKey: Buffer,
     message: Buffer,
     signatureToVerify: Buffer
-  ): void {
+  ): boolean {
     return schnorr.verify(publicKey, message, signatureToVerify)
   }
 
