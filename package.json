@@ -21,6 +21,7 @@
     "node": ">=10.15.3"
   },
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
