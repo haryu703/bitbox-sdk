@@ -1,7 +1,7 @@
 // imports
 import * as assert from "assert";
 import { BITBOX } from "../../src/BITBOX"
-import { TransactionBuilder } from "../../src/TransactionBuilder"
+import { TransactionBuilder, HashTypes } from "../../src/TransactionBuilder"
 import * as bcl from "bitcoinforksjs-lib"
 
 // consts
@@ -25,7 +25,7 @@ describe("#TransactionBuilder", (): void => {
         assert.equal(
           fixture[Object.keys(fixture)[0]],
           // @ts-ignore
-          transactionBuilder.hashTypes[Object.keys(fixture)[0]]
+          HashTypes[Object.keys(fixture)[0]]
         )
       })
     })
@@ -60,7 +60,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             const tx: any = transactionBuilder.build()
@@ -97,7 +97,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             const tx: any = transactionBuilder.build()
@@ -143,7 +143,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             const tx: any = transactionBuilder.build()
@@ -187,7 +187,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             const tx: any = transactionBuilder.build()
@@ -243,14 +243,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             const tx: any = transactionBuilder.build()
@@ -304,14 +304,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             const tx: any = transactionBuilder.build()
@@ -363,14 +363,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             const tx: any = transactionBuilder.build()
@@ -420,14 +420,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             const tx: any = transactionBuilder.build()
@@ -465,7 +465,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
 
@@ -502,7 +502,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
 
@@ -539,7 +539,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
 
@@ -585,7 +585,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             // build tx
@@ -629,7 +629,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             // build tx
@@ -673,7 +673,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             // build tx
@@ -717,14 +717,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[0]
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[1]
             )
             const tx: any = transactionBuilder.build()
@@ -764,14 +764,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[0]
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[1]
             )
             const tx: any = transactionBuilder.build()
@@ -811,14 +811,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[0]
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[1]
             )
             const tx: any = transactionBuilder.build()
@@ -853,14 +853,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[0]
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[1]
             )
             const tx: any = transactionBuilder.build()
@@ -893,14 +893,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[0]
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[1]
             )
             const tx: any = transactionBuilder.build()
@@ -933,14 +933,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[0]
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               fixture.amounts[1]
             )
             const tx: any = transactionBuilder.build()
@@ -977,7 +977,7 @@ describe("#TransactionBuilder", (): void => {
             0,
             keyPair,
             redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
+            HashTypes.SIGHASH_ALL,
             fixture.amount
           )
           const tx: any = transactionBuilder.build()
@@ -1011,7 +1011,7 @@ describe("#TransactionBuilder", (): void => {
             0,
             keyPair,
             redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
+            HashTypes.SIGHASH_ALL,
             fixture.amount
           )
           const tx: any = transactionBuilder.build()
@@ -1045,7 +1045,7 @@ describe("#TransactionBuilder", (): void => {
             0,
             keyPair,
             redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
+            HashTypes.SIGHASH_ALL,
             fixture.amount
           )
           const tx: any = transactionBuilder.build()
@@ -1098,7 +1098,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             const tx: any = transactionBuilder.build()
@@ -1125,7 +1125,7 @@ describe("#TransactionBuilder", (): void => {
       //       // add output w/ address and amount to send
       //       let redeemScript
       //       transactionBuilder.addOutput(fixture.outputs[0], sendAmount);
-      //       transactionBuilder.sign(0, keyPair, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, originalAmount);
+      //       transactionBuilder.sign(0, keyPair, redeemScript, HashTypes.SIGHASH_ALL, originalAmount);
       //
       //       // build tx
       //       let tx = transactionBuilder.build();
@@ -1187,7 +1187,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             const tx: any = transactionBuilder.build()
@@ -1216,7 +1216,7 @@ describe("#TransactionBuilder", (): void => {
       //         transactionBuilder.addOutput(fixture.outputs[0], Math.floor(sendAmount / 2));
       //         transactionBuilder.addOutput(fixture.outputs[1], Math.floor(sendAmount / 2));
       //         let redeemScript
-      //         transactionBuilder.sign(0, keyPair, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, originalAmount);
+      //         transactionBuilder.sign(0, keyPair, redeemScript, HashTypes.SIGHASH_ALL, originalAmount);
       //         // build tx
       //         let tx = transactionBuilder.build();
       //         // output rawhex
@@ -1292,14 +1292,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             const tx: any = transactionBuilder.build()
@@ -1326,8 +1326,8 @@ describe("#TransactionBuilder", (): void => {
       //         let keyPair1 = bitbox.HDNode.toKeyPair(node1);
       //         let keyPair2 = bitbox.HDNode.toKeyPair(node2);
       //         let redeemScript;
-      //         transactionBuilder.sign(0, keyPair1, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, fixture.amounts[0]);
-      //         transactionBuilder.sign(1, keyPair2, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, fixture.amounts[1]);
+      //         transactionBuilder.sign(0, keyPair1, redeemScript, HashTypes.SIGHASH_ALL, fixture.amounts[0]);
+      //         transactionBuilder.sign(1, keyPair2, redeemScript, HashTypes.SIGHASH_ALL, fixture.amounts[1]);
       //         let tx = transactionBuilder.build();
       //         let hex = tx.toHex();
       //         assert.equal(hex, fixture.hex);
@@ -1392,14 +1392,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               redeemScript,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             const tx: any = transactionBuilder.build()
@@ -1425,8 +1425,8 @@ describe("#TransactionBuilder", (): void => {
       //         let keyPair1 = bitbox.HDNode.toKeyPair(node1);
       //         let keyPair2 = bitbox.HDNode.toKeyPair(node2);
       //         let redeemScript;
-      //         transactionBuilder.sign(0, keyPair1, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, fixture.amounts[0]);
-      //         transactionBuilder.sign(1, keyPair2, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, fixture.amounts[1]);
+      //         transactionBuilder.sign(0, keyPair1, redeemScript, HashTypes.SIGHASH_ALL, fixture.amounts[0]);
+      //         transactionBuilder.sign(1, keyPair2, redeemScript, HashTypes.SIGHASH_ALL, fixture.amounts[1]);
       //         let tx = transactionBuilder.build();
       //         let hex = tx.toHex();
       //         assert.equal(hex, fixture.hex);
@@ -1484,7 +1484,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               buf1,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             const tx: any = transactionBuilder.build()
@@ -1511,7 +1511,7 @@ describe("#TransactionBuilder", (): void => {
       //       // add output w/ address and amount to send
       //       let redeemScript
       //       transactionBuilder.addOutput(fixture.outputs[0], sendAmount);
-      //       transactionBuilder.sign(0, keyPair, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, originalAmount);
+      //       transactionBuilder.sign(0, keyPair, redeemScript, HashTypes.SIGHASH_ALL, originalAmount);
       //
       //       // build tx
       //       let tx = transactionBuilder.build();
@@ -1581,7 +1581,7 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               buf1,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount
             )
             const tx: any = transactionBuilder.build()
@@ -1610,7 +1610,7 @@ describe("#TransactionBuilder", (): void => {
       //         transactionBuilder.addOutput(fixture.outputs[0], Math.floor(sendAmount / 2));
       //         transactionBuilder.addOutput(fixture.outputs[1], Math.floor(sendAmount / 2));
       //         let redeemScript
-      //         transactionBuilder.sign(0, keyPair, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, originalAmount);
+      //         transactionBuilder.sign(0, keyPair, redeemScript, HashTypes.SIGHASH_ALL, originalAmount);
       //         // build tx
       //         let tx = transactionBuilder.build();
       //         // output rawhex
@@ -1697,14 +1697,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               buf1,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               buf2,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             const tx: any = transactionBuilder.build()
@@ -1731,8 +1731,8 @@ describe("#TransactionBuilder", (): void => {
       //         let keyPair1 = bitbox.HDNode.toKeyPair(node1);
       //         let keyPair2 = bitbox.HDNode.toKeyPair(node2);
       //         let redeemScript;
-      //         transactionBuilder.sign(0, keyPair1, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, fixture.amounts[0]);
-      //         transactionBuilder.sign(1, keyPair2, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, fixture.amounts[1]);
+      //         transactionBuilder.sign(0, keyPair1, redeemScript, HashTypes.SIGHASH_ALL, fixture.amounts[0]);
+      //         transactionBuilder.sign(1, keyPair2, redeemScript, HashTypes.SIGHASH_ALL, fixture.amounts[1]);
       //         let tx = transactionBuilder.build();
       //         let hex = tx.toHex();
       //         assert.equal(hex, fixture.hex);
@@ -1805,14 +1805,14 @@ describe("#TransactionBuilder", (): void => {
               0,
               keyPair1,
               buf1,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             transactionBuilder.sign(
               1,
               keyPair2,
               buf2,
-              transactionBuilder.hashTypes.SIGHASH_ALL,
+              HashTypes.SIGHASH_ALL,
               originalAmount / 2
             )
             const tx: any = transactionBuilder.build()
@@ -1838,8 +1838,8 @@ describe("#TransactionBuilder", (): void => {
       //         let keyPair1 = bitbox.HDNode.toKeyPair(node1);
       //         let keyPair2 = bitbox.HDNode.toKeyPair(node2);
       //         let redeemScript;
-      //         transactionBuilder.sign(0, keyPair1, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, fixture.amounts[0]);
-      //         transactionBuilder.sign(1, keyPair2, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, fixture.amounts[1]);
+      //         transactionBuilder.sign(0, keyPair1, redeemScript, HashTypes.SIGHASH_ALL, fixture.amounts[0]);
+      //         transactionBuilder.sign(1, keyPair2, redeemScript, HashTypes.SIGHASH_ALL, fixture.amounts[1]);
       //         let tx = transactionBuilder.build();
       //         let hex = tx.toHex();
       //         assert.equal(hex, fixture.hex);
@@ -1874,7 +1874,7 @@ describe("#TransactionBuilder", (): void => {
             0,
             keyPair,
             redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
+            HashTypes.SIGHASH_ALL,
             fixture.amount
           )
           const tx: any = transactionBuilder.build()
@@ -1908,7 +1908,7 @@ describe("#TransactionBuilder", (): void => {
             0,
             keyPair,
             redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
+            HashTypes.SIGHASH_ALL,
             fixture.amount
           )
           const tx: any = transactionBuilder.build()
@@ -1942,7 +1942,7 @@ describe("#TransactionBuilder", (): void => {
             0,
             keyPair,
             redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
+            HashTypes.SIGHASH_ALL,
             fixture.amount
           )
           const tx: any = transactionBuilder.build()
@@ -2028,7 +2028,7 @@ describe("#TransactionBuilder", (): void => {
             0,
             keyPair,
             redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
+            HashTypes.SIGHASH_ALL,
             fixture.amount
           )
           const tx: any = transactionBuilder.build()

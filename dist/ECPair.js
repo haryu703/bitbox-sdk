@@ -1,9 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var bcl = require("bitcoinforksjs-lib");
-var BigInteger = require("bigi");
 var Address_1 = require("./Address");
-var Schnorr_1 = require("./Schnorr");
 var SignatureAlgorithm;
 (function (SignatureAlgorithm) {
     SignatureAlgorithm[SignatureAlgorithm["ECDSA"] = 0] = "ECDSA";
@@ -13,7 +11,6 @@ var ECPair = /** @class */ (function () {
     function ECPair(address) {
         if (address === void 0) { address = new Address_1.Address(); }
         this._address = address;
-        this._schnorr = new Schnorr_1.Schnorr();
     }
     ECPair.prototype.fromWIF = function (privateKeyWIF) {
         var network = "mainnet";
@@ -33,28 +30,13 @@ var ECPair = /** @class */ (function () {
     };
     ECPair.prototype.sign = function (ecpair, buffer, signatureAlgorithm) {
         if (signatureAlgorithm === void 0) { signatureAlgorithm = SignatureAlgorithm.ECDSA; }
-        switch (signatureAlgorithm) {
-            case SignatureAlgorithm.ECDSA:
-                var sig = ecpair.sign(buffer);
-                var der = bcl.script.signature.encode(sig, 0x01).slice(0, -1);
-                return der;
-            case SignatureAlgorithm.SCHNORR:
-                var priv = BigInteger.fromBuffer(ecpair.privateKey);
-                return this._schnorr.sign(priv, buffer);
-            default:
-                throw new Error("unknown signature algorithm " + signatureAlgorithm);
-        }
+        var useSchnorr = signatureAlgorithm === SignatureAlgorithm.SCHNORR;
+        return ecpair.sign(buffer, undefined, useSchnorr);
     };
-    ECPair.prototype.verify = function (ecpair, buffer, signature) {
-        if (signature.length !== 64) {
-            /// ECDSA
-            var decoded = bcl.script.signature.decode(Buffer.concat([signature, Buffer.from([0x01])]));
-            return ecpair.verify(buffer, decoded.signature);
-        }
-        else {
-            // Schnorr
-            return this._schnorr.verify(ecpair.publicKey, buffer, signature);
-        }
+    ECPair.prototype.verify = function (ecpair, buffer, signature, signatureAlgorithm) {
+        if (signatureAlgorithm === void 0) { signatureAlgorithm = SignatureAlgorithm.ECDSA; }
+        var useSchnorr = signatureAlgorithm === SignatureAlgorithm.SCHNORR;
+        return ecpair.verify(buffer, signature, useSchnorr);
     };
     ECPair.prototype.fromPublicKey = function (pubkeyBuffer) {
         return bcl.ECPair.fromPublicKey(pubkeyBuffer);

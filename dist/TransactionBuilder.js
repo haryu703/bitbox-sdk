@@ -2,9 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 // imports
 var bcl = require("bitcoinforksjs-lib");
-var _1 = require(".");
 var Address_1 = require("./Address");
 var BITBOX_1 = require("./BITBOX");
+var HashTypes;
+(function (HashTypes) {
+    HashTypes[HashTypes["SIGHASH_ALL"] = 1] = "SIGHASH_ALL";
+    HashTypes[HashTypes["SIGHASH_NONE"] = 2] = "SIGHASH_NONE";
+    HashTypes[HashTypes["SIGHASH_SINGLE"] = 3] = "SIGHASH_SINGLE";
+    HashTypes[HashTypes["SIGHASH_ANYONECANPAY"] = 128] = "SIGHASH_ANYONECANPAY";
+    HashTypes[HashTypes["SIGHASH_BITCOINCASH_BIP143"] = 64] = "SIGHASH_BITCOINCASH_BIP143";
+    HashTypes[HashTypes["ADVANCED_TRANSACTION_MARKER"] = 0] = "ADVANCED_TRANSACTION_MARKER";
+    HashTypes[HashTypes["ADVANCED_TRANSACTION_FLAG"] = 1] = "ADVANCED_TRANSACTION_FLAG";
+})(HashTypes = exports.HashTypes || (exports.HashTypes = {}));
 var TransactionBuilder = /** @class */ (function () {
     function TransactionBuilder(network) {
         if (network === void 0) { network = "mainnet"; }
@@ -22,18 +31,12 @@ var TransactionBuilder = /** @class */ (function () {
         this.transaction = new bcl.TransactionBuilder(bitcoincash);
         this.transaction.enableBitcoinCash(true);
         this.DEFAULT_SEQUENCE = 0xffffffff;
-        this.hashTypes = {
-            SIGHASH_ALL: 0x01,
-            SIGHASH_NONE: 0x02,
-            SIGHASH_SINGLE: 0x03,
-            SIGHASH_ANYONECANPAY: 0x80,
-            SIGHASH_BITCOINCASH_BIP143: 0x40,
-            ADVANCED_TRANSACTION_MARKER: 0x00,
-            ADVANCED_TRANSACTION_FLAG: 0x01
-        };
         this.p2shInput = false;
         this.tx;
     }
+    TransactionBuilder.prototype.setSchnorr = function (enable) {
+        this.transaction.setSchnorr(enable);
+    };
     TransactionBuilder.prototype.addInput = function (txHash, vout, sequence, prevOutScript) {
         if (sequence === void 0) { sequence = this.DEFAULT_SEQUENCE; }
         if (prevOutScript === void 0) { prevOutScript = undefined; }
@@ -72,11 +75,10 @@ var TransactionBuilder = /** @class */ (function () {
     TransactionBuilder.prototype.setLockTime = function (locktime) {
         this.transaction.setLockTime(locktime);
     };
-    TransactionBuilder.prototype.sign = function (vin, keyPair, redeemScript, hashType, value, signatureAlgorithm) {
-        if (hashType === void 0) { hashType = this.hashTypes.SIGHASH_ALL; }
-        if (signatureAlgorithm === void 0) { signatureAlgorithm = _1.SignatureAlgorithm.ECDSA; }
+    TransactionBuilder.prototype.sign = function (vin, keyPair, redeemScript, hashType, value) {
+        if (hashType === void 0) { hashType = HashTypes.SIGHASH_ALL; }
         var witnessScript = undefined;
-        this.transaction.sign(vin, keyPair, redeemScript, hashType | this.hashTypes.SIGHASH_BITCOINCASH_BIP143, value, witnessScript);
+        this.transaction.sign(vin, keyPair, redeemScript, hashType | HashTypes.SIGHASH_BITCOINCASH_BIP143, value, witnessScript);
     };
     TransactionBuilder.prototype.build = function () {
         if (this.p2shInput === true)

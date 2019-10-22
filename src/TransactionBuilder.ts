@@ -1,23 +1,21 @@
 // imports
 import * as bcl from "bitcoinforksjs-lib"
-import { SignatureAlgorithm } from "."
 import { Address } from "./Address"
 import { TREST_URL } from "./BITBOX"
 
-declare interface HashTypes {
-  SIGHASH_ALL: number
-  SIGHASH_NONE: number
-  SIGHASH_SINGLE: number
-  SIGHASH_ANYONECANPAY: number
-  SIGHASH_BITCOINCASH_BIP143: number
-  ADVANCED_TRANSACTION_MARKER: number
-  ADVANCED_TRANSACTION_FLAG: number
+export enum HashTypes {
+  SIGHASH_ALL = 0x01,
+  SIGHASH_NONE = 0x02,
+  SIGHASH_SINGLE = 0x03,
+  SIGHASH_ANYONECANPAY = 0x80,
+  SIGHASH_BITCOINCASH_BIP143 = 0x40,
+  ADVANCED_TRANSACTION_MARKER = 0x00,
+  ADVANCED_TRANSACTION_FLAG = 0x01,
 }
 
 export class TransactionBuilder {
   transaction: bcl.TransactionBuilder
   DEFAULT_SEQUENCE: number
-  hashTypes: HashTypes
   p2shInput: boolean
   tx: bcl.Transaction | undefined
   private _address: Address
@@ -36,17 +34,12 @@ export class TransactionBuilder {
     this.transaction = new bcl.TransactionBuilder(bitcoincash)
     this.transaction.enableBitcoinCash(true)
     this.DEFAULT_SEQUENCE = 0xffffffff
-    this.hashTypes = {
-      SIGHASH_ALL: 0x01,
-      SIGHASH_NONE: 0x02,
-      SIGHASH_SINGLE: 0x03,
-      SIGHASH_ANYONECANPAY: 0x80,
-      SIGHASH_BITCOINCASH_BIP143: 0x40,
-      ADVANCED_TRANSACTION_MARKER: 0x00,
-      ADVANCED_TRANSACTION_FLAG: 0x01
-    }
     this.p2shInput = false
     this.tx
+  }
+
+  public setSchnorr(enable?: boolean) {
+    this.transaction.setSchnorr(enable)
   }
 
   public addInput(
@@ -98,9 +91,8 @@ export class TransactionBuilder {
     vin: number,
     keyPair: bcl.ECPairInterface,
     redeemScript: Buffer | undefined,
-    hashType: number = this.hashTypes.SIGHASH_ALL,
+    hashType: number = HashTypes.SIGHASH_ALL,
     value: number,
-    signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.ECDSA
   ): void {
     const witnessScript = undefined
 
@@ -108,7 +100,7 @@ export class TransactionBuilder {
       vin,
       keyPair,
       redeemScript,
-      hashType | this.hashTypes.SIGHASH_BITCOINCASH_BIP143,
+      hashType | HashTypes.SIGHASH_BITCOINCASH_BIP143,
       value,
       witnessScript,
     )

@@ -7,12 +7,11 @@ export declare enum SignatureAlgorithm {
 }
 export declare class ECPair {
     private _address;
-    private _schnorr;
     constructor(address?: Address);
     fromWIF(privateKeyWIF: string): bcl.ECPair.ECPairInterface;
     toWIF(ecpair: bcl.ECPair.ECPairInterface): string;
     sign(ecpair: bcl.ECPair.ECPairInterface, buffer: Buffer, signatureAlgorithm?: SignatureAlgorithm): Buffer;
-    verify(ecpair: bcl.ECPair.ECPairInterface, buffer: Buffer, signature: Buffer): boolean;
+    verify(ecpair: bcl.ECPair.ECPairInterface, buffer: Buffer, signature: Buffer, signatureAlgorithm?: SignatureAlgorithm): boolean;
     fromPublicKey(pubkeyBuffer: Buffer): bcl.ECPair.ECPairInterface;
     toPublicKey(ecpair: bcl.ECPair.ECPairInterface): Buffer;
     toLegacyAddress(ecpair: bcl.ECPair.ECPairInterface): string;

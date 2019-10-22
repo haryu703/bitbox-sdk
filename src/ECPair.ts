@@ -1,8 +1,6 @@
 import * as bcl from "bitcoinforksjs-lib"
-import * as BigInteger from "bigi"
 
 import { Address } from "./Address"
-import { Schnorr } from "./Schnorr"
 
 export enum SignatureAlgorithm {
   ECDSA = 0x00,
@@ -11,10 +9,8 @@ export enum SignatureAlgorithm {
 
 export class ECPair {
   private _address: Address
-  private _schnorr: Schnorr
   constructor(address: Address = new Address()) {
     this._address = address
-    this._schnorr = new Schnorr()
   }
 
   public fromWIF(privateKeyWIF: string): bcl.ECPair.ECPairInterface {
@@ -39,32 +35,18 @@ export class ECPair {
     buffer: Buffer,
     signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.ECDSA
   ): Buffer {
-    switch (signatureAlgorithm) {
-      case SignatureAlgorithm.ECDSA:
-        const sig = ecpair.sign(buffer)
-        const der = bcl.script.signature.encode(sig, 0x01).slice(0, -1)
-        return der
-      case SignatureAlgorithm.SCHNORR:
-        const priv = BigInteger.fromBuffer(ecpair.privateKey)
-        return this._schnorr.sign(priv, buffer)
-      default:
-        throw new Error(`unknown signature algorithm ${signatureAlgorithm}`)
-    }
+    const useSchnorr = signatureAlgorithm === SignatureAlgorithm.SCHNORR
+    return ecpair.sign(buffer, undefined, useSchnorr)
   }
 
   public verify(
     ecpair: bcl.ECPair.ECPairInterface,
     buffer: Buffer,
-    signature: Buffer
+    signature: Buffer,
+    signatureAlgorithm: SignatureAlgorithm = SignatureAlgorithm.ECDSA
   ): boolean {
-    if (signature.length !== 64) {
-      /// ECDSA
-      const decoded = bcl.script.signature.decode(Buffer.concat([signature, Buffer.from([0x01])]))
-      return ecpair.verify(buffer, decoded.signature)
-    } else {
-      // Schnorr
-      return this._schnorr.verify(ecpair.publicKey, buffer, signature)
-    }
+    const useSchnorr = signatureAlgorithm === SignatureAlgorithm.SCHNORR
+    return ecpair.verify(buffer, signature, useSchnorr)
   }
 
   public fromPublicKey(pubkeyBuffer: Buffer): bcl.ECPair.ECPairInterface {

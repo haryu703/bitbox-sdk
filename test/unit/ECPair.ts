@@ -158,11 +158,9 @@ describe("#ECPair", (): void => {
         it(`should sign 32 byte hash buffer`, (): void => {
           const ecpair = bitbox.ECPair.fromWIF(fixture.privateKeyWIF)
           const buf: Buffer = Buffer.from(bitbox.Crypto.sha256(fixture.data))
-          const sig = bitbox.ECPair.sign(ecpair, buf)
-            .toString("hex")
-          // const schnorrSig = bitbox.ECPair.sign(ecpair, buf, 0x01)
-          //   .toString("hex")
+          const sig = bitbox.ECPair.sign(ecpair, buf).toString("hex")
           assert.equal(sig, fixture.sig)
+          // const schnorrSig = bitbox.ECPair.sign(ecpair, buf, SignatureAlgorithm.SCHNORR).toString("hex")
           // assert.equal(schnorrSig, fixture.schnorrSig)
         })
       }
